@@ -2,11 +2,13 @@
 // Camera capture and presentation, compiled against PySuperTuxKart2 v0.7.4 headers.
 // Calls the native camera API. Never reads or changes kart controls or physics.
 #include "graphics/camera/camera.hpp"
+#include "graphics/irr_driver.hpp"
 #include "karts/abstract_kart.hpp"
 #include "karts/kart_model.hpp"
 #include "ge_render_info.hpp"
 #include "modes/world.hpp"
 #include "race/race_manager.hpp"
+#include "tracks/track.hpp"
 #include <cmath>
 #include <set>
 
@@ -55,6 +57,17 @@ extern "C" int kart_replay_label(unsigned index, const char* label) {
         auto* child = node->getChildren()[i];
         if (!existing.count(child)) child->setScale({0.12f, 0.12f, 0.12f});
     }
+    return 1;
+}
+
+// Replay presentation only: change lighting after the original scene is loaded.
+// Do not reload assets or alter scene objects, collision geometry or random state.
+extern "C" int kart_replay_daylight() {
+    auto* track = Track::getCurrentTrack();
+    if (!track || !irr_driver) return 0;
+    track->forceFogDisabled(true);
+    irr_driver->setAmbientLight({90.f / 255.f, 110.f / 255.f, 120.f / 255.f});
+    irr_driver->setSunColor({180.f / 255.f, 185.f / 255.f, 175.f / 255.f});
     return 1;
 }
 

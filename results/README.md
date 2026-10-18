@@ -2,7 +2,27 @@
 
 Recorded on 18 October 2026 using the implementation in this repository. The tables retain every completed trial in the fresh comparison batch. Demonstration clips are selected excerpts; these results are the comparison sample.
 
-The batch is complete.
+The original single-player batch is complete. Corrected two-player results are reported separately below.
+
+<!-- corrected-duels:start -->
+## Corrected head-to-head races
+
+**4 of six trials complete; remaining races are pending.**
+
+Each camera stays attached to its own player with the correct 4:3 projection. Both drivers continue until they finish or reach the 600-second game-time cap. The tables use engine finish times and their actual difference in **seconds**. API failures are excluded; unfinished races have no invented finish time or gap.
+
+| Track | Fat starting slot | Outcome | Kettei seconds | Jev seconds | Gap seconds |
+|---|---:|---|---:|---:|---:|
+| Hacienda | 1 | Pending | — | — | — |
+| Hacienda | 2 | Pending | — | — | — |
+| Lighthouse | 1 | Kettei Fat wins | 71.92 | 87.77 | 15.85 |
+| Lighthouse | 2 | Excluded: HTTP 529 | — | — | — |
+| Oliver's Math Class | 1 | Kettei Fat wins | 94.84 | 143.68 | 48.84 |
+| Oliver's Math Class | 2 | Kettei Fat wins | 85.01 | 95.98 | 10.97 |
+
+Recorded with commit [`eadf657`](https://github.com/sqwishai/kettei-kart/commit/eadf657). [Machine-readable results and trace hashes](corrected-head-to-head.json) retain every trial. Replay names, paint colours and daylight lighting do not alter the recorded model inputs. A small matched sample is descriptive, not a guarantee of winning every race.
+
+<!-- corrected-duels:end -->
 
 ## Full-lap time trials
 

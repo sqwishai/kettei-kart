@@ -32,7 +32,9 @@ def read_rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text().splitlines()]
 
 
-def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
+def smooth_cameras(
+    directory: Path, output: Path, *, detail: bool = False, daylight: bool = False
+) -> dict[str, Path]:
     """Replay saved controls at 30 fps, verifying physics after every decision."""
     manifest = json.loads((directory / "manifest.json").read_text())
     if manifest.get("camera_capture", {}).get("protocol") != "fixed-player-cameras-v1":
@@ -47,6 +49,7 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
     paths = {provider: output / f"{provider}-camera.mp4" for provider in providers}
     writers, simulator = [], None
     max_error = 0.0
+    max_finish_error = 0.0
     try:
         simulator = Simulator(
             manifest["track"],
@@ -54,6 +57,8 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
             players=2,
             player_names=tuple(KART_NAMES[provider] for provider in providers),
             player_colors=tuple(KART_HUES[provider] for provider in providers),
+            replay_detail=detail,
+            replay_daylight=daylight,
         )
         writers = [
             iio.get_writer(
@@ -86,18 +91,28 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
                 max_error = max(max_error, error)
                 if error > 0.02 or actual["finished"] != expected["finished"]:
                     raise ValueError(f"Replay physics diverged at decision {step}, player {slot}")
+                if actual["finished"]:
+                    finish_error = abs(actual["finish_time"] - expected["finish_time"])
+                    max_finish_error = max(max_finish_error, finish_error)
+                    if finish_error > 1e-4:
+                        raise ValueError(
+                            f"Replay finish time diverged at interval {step}, player {slot}"
+                        )
         write_json(
             output / "verification.json",
             {
                 "passed": True,
                 "decisions": len(rows[0]),
                 "max_physics_error": max_error,
+                "max_finish_time_error": max_finish_error,
                 "fps": 30,
                 "method": "Recorded controls; no model calls",
                 "player_names": [KART_NAMES[provider] for provider in providers],
                 "names_added_for_replay": True,
                 "kart_hues_added_for_replay": {p: KART_HUES[p] for p in providers},
                 "camera_capture": simulator.capture_contract,
+                "replay_detail": detail,
+                "replay_daylight": daylight,
             },
         )
         for slot, provider in enumerate(providers):
@@ -111,7 +126,13 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
 
 
 def compose_pair(
-    cameras: dict, rows: dict, result: dict, game_time: float, *, finished: bool = False
+    cameras: dict,
+    rows: dict,
+    result: dict,
+    game_time: float,
+    *,
+    finished: bool = False,
+    playback: int = 1,
 ) -> Image.Image:
     canvas = Image.new("RGB", SIZE, BACKGROUND)
     draw = ImageDraw.Draw(canvas)
@@ -124,7 +145,9 @@ def compose_pair(
     gap = result.get("finish_gap_seconds")
     clock = f"{game_time:.1f}s"
     if finished and gap is not None:
-        clock = f"Finish gap: {gap:.1f} seconds"
+        clock = f"Finish gap: {gap:.2f} seconds"
+    elif playback != 1:
+        clock += f"  ·  {playback}× playback"
     text(draw, (960, 65), clock, 23, MUTED, anchor="ma")
     for slot, provider in enumerate(("sqwish", "typesafe")):
         x = 24 + slot * 960
@@ -134,9 +157,9 @@ def compose_pair(
         row = rows[provider]
         color = ACCENT if provider == "sqwish" else "#78C8F4"
         draw.rounded_rectangle((x, 810, x + 912, 1015), 14, fill=PANEL)
-        if row.get("decision_made") is False:
+        if row.get("decision_made") is False or (finished and row["evaluator"]["finished"]):
             finish_time = row["evaluator"]["finish_time"]
-            text(draw, (x + 18, 834), f"FINISHED  ·  {finish_time:.1f} seconds", 28, color, True)
+            text(draw, (x + 18, 834), f"FINISHED  ·  {finish_time:.2f} seconds", 28, color, True)
             text(draw, (x + 18, 885), "No further model decisions", 21, MUTED)
             continue
         text(draw, (x + 18, 823), "ACTION PROBABILITIES", 17, MUTED, True)
@@ -159,15 +182,49 @@ def compose_pair(
     text(
         draw,
         (26, 1036),
-        "GAME-SPEED REPLAY · SAME WORLD · SAME HARNESS · BOTH CHOOSE BEFORE THE CLOCK ADVANCES"
-        + (" · PLAYER LABELS ADDED IN REPLAY" if result.get("names_added_for_replay") else ""),
+        ("GAME REPLAY" if playback == 1 else f"{playback}× REPLAY")
+        + " · SAME WORLD · SAME HARNESS"
+        + (
+            " · KART COLOURS AND LABELS ADDED IN REPLAY"
+            if result.get("names_added_for_replay")
+            else ""
+        ),
         17,
         MUTED,
     )
     return canvas
 
 
-def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
+def playback_frames(rows: dict, fps: float, finish_speed: int):
+    """Keep the first finish and the second approach, speeding only the wait between."""
+    if finish_speed not in (1, 2, 4, 8, 12, 16, 24, 32):
+        raise ValueError("Unsupported finish playback speed")
+    count = len(next(iter(rows.values())))
+    total = round(count * ACTION_SECONDS * fps)
+    finishes = [
+        (i + 1) * ACTION_SECONDS
+        for part in rows.values()
+        for i, row in enumerate(part)
+        if row["evaluator"]["finished"] and (i == 0 or not part[i - 1]["evaluator"]["finished"])
+    ]
+    first = min(finishes, default=count * ACTION_SECONDS)
+    start, stop = min(total, round((first + 1) * fps)), max(0, total - round(2 * fps))
+    frame = 0
+    while frame < total:
+        rate = finish_speed if start <= frame < stop else 1
+        yield frame, rate
+        frame = min(frame + rate, stop) if rate != 1 else frame + 1
+
+
+def render_duel(
+    directory: Path,
+    output: Path,
+    *,
+    smooth: bool = True,
+    detail: bool = False,
+    daylight: bool = False,
+    finish_speed: int = 12,
+) -> None:
     if output.exists():
         raise FileExistsError(f"Refusing to overwrite {output}")
     result = json.loads((directory / "result.json").read_text())
@@ -181,7 +238,7 @@ def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
     if not rows["sqwish"] or len(rows["sqwish"]) != len(rows["typesafe"]):
         raise ValueError("A paired replay requires equal, nonempty decision streams")
     paths = (
-        smooth_cameras(directory, output.with_suffix(".replay"))
+        smooth_cameras(directory, output.with_suffix(".replay"), detail=detail, daylight=daylight)
         if smooth
         else {p: directory / p / "camera.mp4" for p in NAMES}
     )
@@ -192,6 +249,7 @@ def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
         raise ValueError("Camera frame rates differ")
     output.parent.mkdir(parents=True, exist_ok=True)
     count = len(rows["sqwish"])
+    frozen_views = {}
     try:
         with iio.get_writer(
             str(output),
@@ -209,14 +267,20 @@ def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
                 "+faststart",
             ],
         ) as writer:
-            for frame in range(round(count * ACTION_SECONDS * fps)):
+            for frame, playback in playback_frames(rows, fps, finish_speed):
                 index = min(int(frame / fps / ACTION_SECONDS + 1e-7), count - 1)
                 cameras = {
-                    p: Image.fromarray(reader.get_next_data()) for p, reader in readers.items()
+                    p: Image.fromarray(reader.get_data(frame)) for p, reader in readers.items()
                 }
                 decisions = {p: part[index] for p, part in rows.items()}
+                for provider, row in decisions.items():
+                    if row.get("decision_made") is False:
+                        frozen_views.setdefault(provider, cameras[provider])
+                        cameras[provider] = frozen_views[provider]
                 writer.append_data(
-                    np.asarray(compose_pair(cameras, decisions, result, frame / fps))
+                    np.asarray(
+                        compose_pair(cameras, decisions, result, frame / fps, playback=playback)
+                    )
                 )
             cameras = {
                 p: Image.open(
@@ -226,6 +290,7 @@ def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
                 )
                 for p in NAMES
             }
+            cameras.update(frozen_views)
             final = compose_pair(
                 cameras,
                 {p: part[-1] for p, part in rows.items()},

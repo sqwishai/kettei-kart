@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kettei-kart"
-version = "1.0.1"
+version = "1.0.2"
 description = "A camera-only SuperTuxKart driver with live decision probabilities."
 readme = "README.md"
 requires-python = ">=3.12,<3.14"

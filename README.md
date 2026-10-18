@@ -2,11 +2,9 @@
 
 **A decision model, a camera, and nine buttons.** Kettei Fat drives SuperTuxKart through the Sqwish production API. Every decision returns a probability for each control; the highest probability wins.
 
-**1v1 capture correction in progress:** the initial two-player recordings and comparison claims
-are withdrawn. A camera audit found that camera slots could follow race position instead of
-player identity, and that their projection did not match the exported image aspect ratio.
-Corrected capture checks camera ownership and projection before every image. Fresh two-player results are pending; earlier recordings are not valid comparisons.
-The [results](results/README.md) retain the excluded outcomes and explain the issue.
+![Kettei and Jev in a verified replay](assets/preview.png)
+
+Two-player capture verifies fixed player-camera identity and the correct projection. The [recorded results](results/README.md) report fresh corrected races and retain the withdrawn initial captures for audit. The preview adds kart colours, names and daylight lighting during verified replay; model inputs remain unchanged.
 
 This repository contains one selected driving harness, its native API adapters, and the tools to record and render a run. Original SuperTuxKart assets and API credentials are not bundled.
 
@@ -72,7 +70,7 @@ sudo apt-get install -y g++ git
 python -m kettei_kart.native_camera
 kettei-kart duel --track lighthouse --seed 501 --output runs/duel-first
 kettei-kart duel --track lighthouse --seed 501 --swap --output runs/duel-swapped
-kettei-kart render-duel runs/duel-first --output runs/duel-first.mp4
+kettei-kart render-duel runs/duel-first --detail --daylight --output runs/duel-first.mp4
 ```
 
 This starts one two-player race with two identical Tux karts, collisions, separate player cameras and a shared simulation clock. Each model receives only its own view and control history. Both choose before the game advances; the slower API response does not grant either kart extra game time. The first completed lap wins, and the race continues until both finish or the game-time limit is reached. The result records both engine finish times and their difference in seconds. If one player reaches the cap, its finish time and the gap remain unavailable. A time limit without a finisher produces no winner.
@@ -88,6 +86,19 @@ Run both grid assignments when comparing models. A single race can favor one sta
 The paired recorder saves both views at the decision cadence. `render-duel` replays their recorded controls at 30 fps and adds compact native **Kettei** and **Jev** labels above the karts, with mint-green and pink paint respectively. Names and colours follow model identity when grid slots are swapped. These additions appear only in the replay and do not alter model inputs. It checks both karts' location, distance and finish status against the original trace after every decision, makes no API calls and stops if the simulation diverges. The video identifies these names as replay additions; original model observations remain available in the trace. Use `--original-cameras` to render those original views at 5 fps instead.
 
 ## Recordings and limits
+
+For presentation, `--detail` renders the replay at 1280 × 960 with higher-detail
+textures and lighting, keeping the same 4:3 camera proportions. `--daylight` lifts
+the native lighting and disables fog after the original scene has loaded. Neither
+option changes model inputs, track objects or controls. The replay still checks
+the original physics trace after every control interval and stops on divergence.
+
+After the first finish, playback speeds up to 12×, then returns to normal for the
+second driver's final approach. The multiplier is shown on screen. Use
+`--finish-speed 1` for uninterrupted game-speed playback. The finished driver's
+panel holds its finish-line view and displays its measured finish time. Both
+finish times and their difference are reported in seconds; a distance lead is
+never converted into an estimated time gap.
 
 An optional [camera introduction](cinematics/README.md) films the drivers from the front,
 then moves the camera 180 degrees into the driving view. It uses a separate daylight scene,
@@ -116,6 +127,16 @@ ruff format --check .
 The small modules separate controls, observations, provider transport, simulation, recording and presentation. Unit tests cover image-history spacing, the observation boundary, control duration, rescue tapping, native request formats, probability validation, retry identity and fail-closed authentication/model checks. An integration test varies track identity, seed and scoring telemetry while holding the player image constant, and checks that the model observation stays identical. Tests make no paid API calls.
 
 Each CLI invocation owns one simulator. When calling the Python functions from a batch driver, use a fresh process for each race or replay. The native graphics runtime cannot safely initialize twice after cleanup; the wrapper rejects reuse before entering native code.
+
+With camera support built and game assets cached, run the optional native checks:
+
+```bash
+KART_NATIVE_TESTS=1 pytest -q tests/test_native_capture.py
+```
+
+These checks exercise player-camera identity through overtakes and rescue on all
+three demonstration tracks, reject an intentionally incorrect projection, and
+compare original versus styled replay physics. They make no model API calls.
 
 ## Credits and license
 

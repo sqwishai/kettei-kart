@@ -33,6 +33,8 @@ class Simulator:
         players: int = 1,
         player_names: tuple[str, ...] | None = None,
         player_colors: tuple[float, ...] | None = None,
+        replay_detail: bool = False,
+        replay_daylight: bool = False,
     ):
         global _graphics_used
         if _graphics_used:
@@ -47,8 +49,11 @@ class Simulator:
         self._stk = stk
         self._race = None
         self._camera_guard = None
-        graphics = stk.GraphicsConfig.ld()
-        graphics.screen_width, graphics.screen_height = 384, 288
+        graphics = stk.GraphicsConfig.hd() if replay_detail else stk.GraphicsConfig.ld()
+        graphics.screen_width, graphics.screen_height = (640, 480) if replay_detail else (384, 288)
+        if replay_detail:
+            graphics.motionblur = graphics.dof = graphics.bloom = graphics.glow = False
+            graphics.light_shaft = graphics.display = False
         stk.init(graphics)
         try:
             config = stk.RaceConfig()
@@ -104,6 +109,8 @@ class Simulator:
                     for slot, name in enumerate(player_names):
                         if not self._camera_guard.native.kart_replay_label(slot, name.encode()):
                             raise RuntimeError("Could not add the replay player label")
+                if replay_daylight and not self._camera_guard.native.kart_replay_daylight():
+                    raise RuntimeError("Could not apply replay daylight lighting")
             track_info = stk.Track()
             track_info.update()
             self.track_length = float(track_info.length)
@@ -126,7 +133,13 @@ class Simulator:
             self._camera_guard.manifest() if self._camera_guard else {"protocol": "single-player"}
         )
 
-    def advance_both(self, controls: tuple[Control, Control], capture=None) -> None:
+    def advance_both(
+        self,
+        controls: tuple[Control, Control],
+        capture=None,
+        *,
+        capture_steps: set[int] | None = None,
+    ) -> None:
         """Apply two simultaneous actions in one shared world and clock."""
         actions = []
         for control in controls:
@@ -135,7 +148,7 @@ class Simulator:
                 setattr(action, key, value)
             actions.append(action)
         for substep in range(ACTION_TICKS):
-            if capture is not None:
+            if capture is not None and (capture_steps is None or substep in capture_steps):
                 capture((self.camera(0), self.camera(1)))
             self._world.update()
             if all(player.kart.has_finished_race for player in self._world.players):

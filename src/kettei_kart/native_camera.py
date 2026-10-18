@@ -19,7 +19,8 @@ SOURCE = Path(__file__).with_name("native") / "camera_control.cpp"
 
 def cache_directory() -> Path:
     cache = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")).expanduser()
-    return cache / "kettei-kart" / "native" / ENGINE_VERSION / platform.machine()
+    source_hash = hashlib.sha256(SOURCE.read_bytes()).hexdigest()[:16]
+    return cache / "kettei-kart" / "native" / ENGINE_VERSION / platform.machine() / source_hash
 
 
 def check_engine() -> None:
@@ -75,6 +76,7 @@ def build(compiler: str = "g++", source: Path | None = None) -> Path:
             f"-I{upstream / 'lib/irrlicht/include'}",
             f"-I{upstream / 'lib/bullet/src'}",
             f"-I{upstream / 'lib/graphics_engine/include'}",
+            f"-I{upstream / 'lib/glad/include'}",
             str(SOURCE),
             "-o",
             str(temporary),
@@ -119,6 +121,8 @@ def load_bridge(stk):
     native.kart_replay_set_hue.restype = ctypes.c_int
     native.kart_replay_label.argtypes = [ctypes.c_uint, ctypes.c_char_p]
     native.kart_replay_label.restype = ctypes.c_int
+    native.kart_replay_daylight.argtypes = []
+    native.kart_replay_daylight.restype = ctypes.c_int
     native.kart_camera_count.argtypes, native.kart_camera_count.restype = [], ctypes.c_int
     native.kart_camera_clear_start_signal.argtypes = []
     native.kart_camera_clear_start_signal.restype = ctypes.c_int

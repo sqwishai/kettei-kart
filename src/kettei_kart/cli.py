@@ -62,6 +62,19 @@ def main() -> None:
     paired.add_argument("run_directory", type=Path)
     paired.add_argument("--output", type=Path, required=True)
     paired.add_argument(
+        "--detail", action="store_true", help="Render the verified replay with higher detail"
+    )
+    paired.add_argument(
+        "--daylight", action="store_true", help="Add replay-only daylight lighting and disable fog"
+    )
+    paired.add_argument(
+        "--finish-speed",
+        type=int,
+        choices=(1, 2, 4, 8, 12, 16, 24, 32),
+        default=12,
+        help="Playback speed between the first finish and the second approach (default: 12)",
+    )
+    paired.add_argument(
         "--original-cameras",
         action="store_true",
         help="Use the original 5 fps model views, without replay-added kart names",
@@ -70,7 +83,16 @@ def main() -> None:
     if args.command == "render-duel":
         from .duel_render import render_duel
 
-        render_duel(args.run_directory, args.output, smooth=not args.original_cameras)
+        if args.original_cameras and (args.detail or args.daylight):
+            parser.error("--detail and --daylight require a replay, not --original-cameras")
+        render_duel(
+            args.run_directory,
+            args.output,
+            smooth=not args.original_cameras,
+            detail=args.detail,
+            daylight=args.daylight,
+            finish_speed=args.finish_speed,
+        )
         return
     if args.command == "duel":
         from .duel import run_duel

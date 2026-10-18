@@ -1,0 +1,294 @@
+{
+  "date": "2026-10-18",
+  "source_commit": "eadf657",
+  "source_sha256": {
+    "__init__.py": "31413d803c46255426715bc63e164554b5bd3c2209366f25684b8269e85c3cc8",
+    "actions.py": "f5c0ddd237176858bc3d11c266dac524810af14db5de9003f9ba29f8c839f5f4",
+    "cli.py": "4b505e957ca8c89b97c1ca8eb05210890a1d1942a8c48d9b0d27f42d02b74b3f",
+    "client.py": "d30daadbf3063570f2a040625806c5b143e2ba4f793c907d3c148383778f78b2",
+    "duel.py": "1a94d185462a35e208361818323af7ea2d372729669a402841a6a39535b7fc9b",
+    "duel_render.py": "9e0f398cbcf68301778254ac7b936ea3e4f7dcf61ceb54a17c45960b238fa685",
+    "metrics.py": "58f6e733799f326e87bec661a02b9a1a974afa1f0ae8b29f6137f4090ff703f0",
+    "native/camera_control.cpp": "4398b50b392f3f5c791ae0cf177b0b43bf870ac93b13a0e152f284002dbd3a85",
+    "native_camera.py": "d2ba49209c25c2aa4825702c6e54d4175bfe31cd632a0647dde2a9d0c8bbb698",
+    "observation.py": "74bdac7b433d830fb0fa5dfe5055fadc586e9cad5b9dfb8499e9bc3a5dc58903",
+    "render.py": "8791ca15e0f482244e0b791026f1172064ef345e2478b2573ca559b0cc3cfca1",
+    "runner.py": "b14d1ea1a699ddf31aba5300fa3dc243fd5ae96304e3f607d7efe8ad03823e74",
+    "simulator.py": "27e6c9ceaab5d1421e10357ac01bfee77d700ab4718c92b462b83077feac21ad"
+  },
+  "complete": false,
+  "pending": [
+    {
+      "track": "hacienda",
+      "seed": 503,
+      "swap": false,
+      "name": "hacienda-s503-fat-grid-1"
+    },
+    {
+      "track": "hacienda",
+      "seed": 503,
+      "swap": true,
+      "name": "hacienda-s503-fat-grid-2"
+    }
+  ],
+  "game_seconds_cap": 600,
+  "protocol": "fixed-player-cameras-v1 / both-finish-v1",
+  "rows": [
+    {
+      "track": "lighthouse",
+      "seed": 501,
+      "slot_providers": [
+        "sqwish",
+        "typesafe"
+      ],
+      "valid": true,
+      "end": "finished",
+      "winner": "sqwish",
+      "tie": false,
+      "both_finished": true,
+      "finish_times": {
+        "sqwish": 71.92266082763672,
+        "typesafe": 87.77188873291016
+      },
+      "finish_gap_seconds": 15.849227905273438,
+      "decisions_per_model": [
+        360,
+        440
+      ],
+      "game_seconds": 88.0,
+      "player_metrics": {
+        "sqwish": {
+          "rescue_button_presses": 4,
+          "low_speed_seconds": 11.8,
+          "low_speed_fraction": 0.1638888888888889,
+          "slow_moving_seconds": 5.0,
+          "nearly_stationary_seconds": 6.800000000000001,
+          "nearly_stationary_fraction": 0.09444444444444444,
+          "prolonged_nearly_stationary_seconds": 5.6000000000000005
+        },
+        "typesafe": {
+          "rescue_button_presses": 12,
+          "low_speed_seconds": 19.0,
+          "low_speed_fraction": 0.2159090909090909,
+          "slow_moving_seconds": 5.6000000000000005,
+          "nearly_stationary_seconds": 13.4,
+          "nearly_stationary_fraction": 0.15227272727272728,
+          "prolonged_nearly_stationary_seconds": 13.4
+        }
+      },
+      "trial": "lighthouse-s501-fat-grid-1",
+      "camera_capture": {
+        "protocol": "fixed-player-cameras-v1",
+        "player_kart_ids": [
+          0,
+          1
+        ],
+        "projection_aspect": 1.3333333333333333,
+        "ownership_checked_every_capture": true,
+        "native_bridge": {
+          "engine_version": "0.7.4",
+          "engine_commit": "dd70f6823f248ae1df2ce513839a9b2c8c940c39",
+          "platform": "x86_64",
+          "source_sha256": "4398b50b392f3f5c791ae0cf177b0b43bf870ac93b13a0e152f284002dbd3a85",
+          "sha256": "f0b3ee9223946bc2b754b585c4041564e02c809c4e81f31a590d2efa701ee2a4"
+        }
+      },
+      "trace_sha256": {
+        "sqwish": "8a42410169f1b65ef14b056f410ba79e25b65163a143a1fd99737163becc4d8c",
+        "typesafe": "8c2ff85931b00ff7668cd824ae2af8ed25c471c0646d3199c69bd498aba22bf9"
+      }
+    },
+    {
+      "track": "lighthouse",
+      "seed": 501,
+      "slot_providers": [
+        "typesafe",
+        "sqwish"
+      ],
+      "valid": false,
+      "end": "error",
+      "winner": null,
+      "tie": false,
+      "both_finished": false,
+      "finish_times": {
+        "sqwish": 78.38902282714844
+      },
+      "finish_gap_seconds": null,
+      "decisions_per_model": [
+        413,
+        393
+      ],
+      "game_seconds": 82.60000000000001,
+      "player_metrics": {
+        "typesafe": {
+          "rescue_button_presses": 12,
+          "low_speed_seconds": 19.8,
+          "low_speed_fraction": 0.2397094430992736,
+          "slow_moving_seconds": 6.0,
+          "nearly_stationary_seconds": 13.8,
+          "nearly_stationary_fraction": 0.16707021791767554,
+          "prolonged_nearly_stationary_seconds": 13.8
+        },
+        "sqwish": {
+          "rescue_button_presses": 5,
+          "low_speed_seconds": 14.8,
+          "low_speed_fraction": 0.18829516539440203,
+          "slow_moving_seconds": 8.0,
+          "nearly_stationary_seconds": 6.800000000000001,
+          "nearly_stationary_fraction": 0.08651399491094147,
+          "prolonged_nearly_stationary_seconds": 6.6000000000000005
+        }
+      },
+      "trial": "lighthouse-s501-fat-grid-2",
+      "camera_capture": {
+        "protocol": "fixed-player-cameras-v1",
+        "player_kart_ids": [
+          0,
+          1
+        ],
+        "projection_aspect": 1.3333333333333333,
+        "ownership_checked_every_capture": true,
+        "native_bridge": {
+          "engine_version": "0.7.4",
+          "engine_commit": "dd70f6823f248ae1df2ce513839a9b2c8c940c39",
+          "platform": "x86_64",
+          "source_sha256": "4398b50b392f3f5c791ae0cf177b0b43bf870ac93b13a0e152f284002dbd3a85",
+          "sha256": "f0b3ee9223946bc2b754b585c4041564e02c809c4e81f31a590d2efa701ee2a4"
+        }
+      },
+      "trace_sha256": {
+        "sqwish": "2e0d664b162c42ad878d51fd34116efd8b6a3e7176f11d622b2d1ea69818ea1c",
+        "typesafe": "1d1a9bfd28e0c9a7c01705591aba772d117347314503ff5e4452632b1e6e44b9"
+      },
+      "failure": "HTTP 529"
+    },
+    {
+      "track": "olivermath",
+      "seed": 502,
+      "slot_providers": [
+        "sqwish",
+        "typesafe"
+      ],
+      "valid": true,
+      "end": "finished",
+      "winner": "sqwish",
+      "tie": false,
+      "both_finished": true,
+      "finish_times": {
+        "sqwish": 94.84166717529297,
+        "typesafe": 143.68003845214844
+      },
+      "finish_gap_seconds": 48.83837127685547,
+      "decisions_per_model": [
+        475,
+        719
+      ],
+      "game_seconds": 143.8,
+      "player_metrics": {
+        "sqwish": {
+          "rescue_button_presses": 10,
+          "low_speed_seconds": 40.0,
+          "low_speed_fraction": 0.42105263157894735,
+          "slow_moving_seconds": 19.6,
+          "nearly_stationary_seconds": 20.400000000000002,
+          "nearly_stationary_fraction": 0.21473684210526317,
+          "prolonged_nearly_stationary_seconds": 18.0
+        },
+        "typesafe": {
+          "rescue_button_presses": 26,
+          "low_speed_seconds": 71.2,
+          "low_speed_fraction": 0.4951321279554937,
+          "slow_moving_seconds": 20.6,
+          "nearly_stationary_seconds": 50.6,
+          "nearly_stationary_fraction": 0.3518776077885953,
+          "prolonged_nearly_stationary_seconds": 50.2
+        }
+      },
+      "trial": "olivermath-s502-fat-grid-1",
+      "camera_capture": {
+        "protocol": "fixed-player-cameras-v1",
+        "player_kart_ids": [
+          0,
+          1
+        ],
+        "projection_aspect": 1.3333333333333333,
+        "ownership_checked_every_capture": true,
+        "native_bridge": {
+          "engine_version": "0.7.4",
+          "engine_commit": "dd70f6823f248ae1df2ce513839a9b2c8c940c39",
+          "platform": "x86_64",
+          "source_sha256": "4398b50b392f3f5c791ae0cf177b0b43bf870ac93b13a0e152f284002dbd3a85",
+          "sha256": "f0b3ee9223946bc2b754b585c4041564e02c809c4e81f31a590d2efa701ee2a4"
+        }
+      },
+      "trace_sha256": {
+        "sqwish": "288df6c00338a2a82a7a4fb60049a18bf7e2729a4af6f138160fb0cbbbecbad7",
+        "typesafe": "a3f7839345f846cbdb2a5a595646c57d68f2eae6ad04bcc69632f0561e200a93"
+      }
+    },
+    {
+      "track": "olivermath",
+      "seed": 502,
+      "slot_providers": [
+        "typesafe",
+        "sqwish"
+      ],
+      "valid": true,
+      "end": "finished",
+      "winner": "sqwish",
+      "tie": false,
+      "both_finished": true,
+      "finish_times": {
+        "sqwish": 85.00984954833984,
+        "typesafe": 95.98223876953125
+      },
+      "finish_gap_seconds": 10.972389221191406,
+      "decisions_per_model": [
+        481,
+        426
+      ],
+      "game_seconds": 96.2,
+      "player_metrics": {
+        "typesafe": {
+          "rescue_button_presses": 14,
+          "low_speed_seconds": 45.2,
+          "low_speed_fraction": 0.4698544698544699,
+          "slow_moving_seconds": 8.4,
+          "nearly_stationary_seconds": 36.800000000000004,
+          "nearly_stationary_fraction": 0.38253638253638256,
+          "prolonged_nearly_stationary_seconds": 36.800000000000004
+        },
+        "sqwish": {
+          "rescue_button_presses": 10,
+          "low_speed_seconds": 33.0,
+          "low_speed_fraction": 0.3873239436619718,
+          "slow_moving_seconds": 16.0,
+          "nearly_stationary_seconds": 17.0,
+          "nearly_stationary_fraction": 0.19953051643192488,
+          "prolonged_nearly_stationary_seconds": 14.8
+        }
+      },
+      "trial": "olivermath-s502-fat-grid-2",
+      "camera_capture": {
+        "protocol": "fixed-player-cameras-v1",
+        "player_kart_ids": [
+          0,
+          1
+        ],
+        "projection_aspect": 1.3333333333333333,
+        "ownership_checked_every_capture": true,
+        "native_bridge": {
+          "engine_version": "0.7.4",
+          "engine_commit": "dd70f6823f248ae1df2ce513839a9b2c8c940c39",
+          "platform": "x86_64",
+          "source_sha256": "4398b50b392f3f5c791ae0cf177b0b43bf870ac93b13a0e152f284002dbd3a85",
+          "sha256": "f0b3ee9223946bc2b754b585c4041564e02c809c4e81f31a590d2efa701ee2a4"
+        }
+      },
+      "trace_sha256": {
+        "sqwish": "98b1d4f40b94b086257ed233c88372f5e826a34fba4177895018f3b235bf24d6",
+        "typesafe": "d56f71c241941fc09e97aa156ad9c53ba6a038df3a0e33a912ba9d20677c301e"
+      }
+    }
+  ]
+}
