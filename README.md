@@ -2,7 +2,11 @@
 
 **A decision model, a camera, and nine buttons.** Kettei Fat drives SuperTuxKart through the Sqwish production API. Every decision returns a probability for each control; the highest probability wins.
 
-![Kettei Fat driving SuperTuxKart with its action probabilities](assets/preview.png)
+**1v1 capture correction in progress:** the initial two-player recordings and comparison claims
+are withdrawn. A camera audit found that camera slots could follow race position instead of
+player identity, and that their projection did not match the exported image aspect ratio.
+Use the single-player commands while corrected two-player capture is being verified.
+The [results](results/README.md) retain the excluded outcomes and explain the issue.
 
 This repository contains one selected driving harness, its native API adapters, and the tools to record and render a run. Original SuperTuxKart assets and API credentials are not bundled.
 

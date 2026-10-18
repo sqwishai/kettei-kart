@@ -2,38 +2,38 @@
 
 Recorded on 18 October 2026 using the implementation in this repository. The tables retain every completed trial in the fresh comparison batch. Demonstration clips are selected excerpts; these results are the comparison sample.
 
-**Evaluation in progress: 9 of 15 trials complete.** Pending trials below have no reported outcome yet.
+**Evaluation in progress: 13 of 15 trials complete.** Pending trials below have no reported outcome yet.
 
 ## Full-lap time trials
 
 | Track | Model | Outcome | Game seconds | Rescue presses |
 |---|---|---|---:|---:|
+| Hacienda | Kettei Fat | 300-second cap | 300.0 | 4 |
 | Hacienda | Jev 1.14 | API failure (HTTP 529) | 277.2 | 13 |
+| Lighthouse | D1 Ultra | Finished | 161.8 | 57 |
 | Lighthouse | Kettei Fat | Finished | 74.0 | 4 |
 | Lighthouse | Jev 1.14 | Finished | 131.6 | 23 |
+| Oliver's Math Class | D1 Ultra | 300-second cap | 300.0 | 194 |
+| Oliver's Math Class | Kettei Fat | Finished | 80.4 | 9 |
 | Hacienda | D1 Ultra | Pending | — | — |
-| Hacienda | Kettei Fat | Pending | — | — |
-| Lighthouse | D1 Ultra | Pending | — | — |
-| Oliver's Math Class | D1 Ultra | Pending | — | — |
-| Oliver's Math Class | Kettei Fat | Pending | — | — |
 | Oliver's Math Class | Jev 1.14 | Pending | — | — |
 
 One trial per model per track is a small descriptive sample. The harness was selected for Fat and applied unchanged to the other providers; it is not a provider-specific optimization contest.
 
 ## Shared-world head-to-head races
 
-Across 6 completed races: **Kettei Fat 3 wins; Jev 1.14 0 wins; 3 without a sole winner.**
+**The six initial 1v1 comparisons and their win claims are withdrawn.** A native-camera audit found that explicit camera slots followed race position and could switch karts after an overtake. It also found a 2.67:1 camera projection rendered into 1.33:1 frames. These runs cannot establish a fair model comparison. Corrected camera capture must pass ownership and aspect-ratio checks before new races are reported.
 
 | Track | Fat starting slot | Winner | Game seconds | Fat / Jev rescue presses |
 |---|---:|---|---:|---:|
-| Hacienda | 1 | Kettei Fat | 132.8 | 3 / 5 |
-| Hacienda | 2 | No finisher | 300.0 | 910 / 285 |
-| Lighthouse | 1 | Kettei Fat | 91.2 | 8 / 46 |
-| Lighthouse | 2 | No finisher | 300.0 | 1128 / 77 |
-| Oliver's Math Class | 1 | Kettei Fat | 77.0 | 10 / 10 |
-| Oliver's Math Class | 2 | No finisher | 300.0 | 1333 / 30 |
+| Hacienda | 1 | Excluded: camera capture | 132.8 | 3 / 5 |
+| Hacienda | 2 | Excluded: camera capture | 300.0 | 910 / 285 |
+| Lighthouse | 1 | Excluded: camera capture | 91.2 | 8 / 46 |
+| Lighthouse | 2 | Excluded: camera capture | 300.0 | 1128 / 77 |
+| Oliver's Math Class | 1 | Excluded: camera capture | 77.0 | 10 / 10 |
+| Oliver's Math Class | 2 | Excluded: camera capture | 300.0 | 1333 / 30 |
 
-Both starting slots are tested on each track. These six races describe this batch; they do not establish a universal win rate. A model still driving when its opponent finishes is a race loss, not a failed solo lap.
+The machine-readable file retains the original observed outcomes for audit, explicitly marks all six runs ineligible, and reports no comparison winners. The single-player time trials and randomized-start checks use one player camera and are separate from this two-player capture defect.
 
 ## Randomized-start checks
 

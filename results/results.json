@@ -6,36 +6,8 @@
       "kind": "solo",
       "track": "hacienda",
       "seed": 303,
-      "provider": "sqwish",
-      "name": "sqwish-hacienda-s303"
-    },
-    {
-      "kind": "solo",
-      "track": "olivermath",
-      "seed": 302,
-      "provider": "liquid",
-      "name": "liquid-olivermath-s302"
-    },
-    {
-      "kind": "solo",
-      "track": "olivermath",
-      "seed": 302,
-      "provider": "sqwish",
-      "name": "sqwish-olivermath-s302"
-    },
-    {
-      "kind": "solo",
-      "track": "hacienda",
-      "seed": 303,
       "provider": "liquid",
       "name": "liquid-hacienda-s303"
-    },
-    {
-      "kind": "solo",
-      "track": "lighthouse",
-      "seed": 301,
-      "provider": "liquid",
-      "name": "liquid-lighthouse-s301"
     },
     {
       "kind": "solo",
@@ -67,6 +39,23 @@
   },
   "solo": [
     {
+      "provider": "sqwish",
+      "model": "kettei-fat",
+      "track": "hacienda",
+      "seed": 303,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions": 1500,
+      "rescue_button_presses": 4,
+      "low_speed_seconds": 99.60000000000001,
+      "slow_moving_seconds": 25.6,
+      "nearly_stationary_seconds": 74.0,
+      "prolonged_nearly_stationary_seconds": 73.8,
+      "finished": false,
+      "valid": true,
+      "trace_sha256": "439975ce670700706924092449fe84a6c7f11d37bcc3b40277bbc8a3a76c0ed4"
+    },
+    {
       "provider": "typesafe",
       "model": "jev-1.14.0",
       "track": "hacienda",
@@ -83,6 +72,23 @@
       "valid": false,
       "failure_status": "HTTP 529",
       "trace_sha256": "a05d0ddb5f60ca330ff096e676dc736f22e14c7f3b530674d23b0e22317a6a57"
+    },
+    {
+      "provider": "liquid",
+      "model": "d1-ultra",
+      "track": "lighthouse",
+      "seed": 301,
+      "end": "finished",
+      "game_seconds": 161.8,
+      "decisions": 809,
+      "rescue_button_presses": 57,
+      "low_speed_seconds": 60.0,
+      "slow_moving_seconds": 14.4,
+      "nearly_stationary_seconds": 45.6,
+      "prolonged_nearly_stationary_seconds": 45.6,
+      "finished": true,
+      "valid": true,
+      "trace_sha256": "5a9bd4f98e83b20dc30fc2074b30e4014e1cf863e7fc3c55eee8dc8b367acc82"
     },
     {
       "provider": "sqwish",
@@ -117,6 +123,40 @@
       "finished": true,
       "valid": true,
       "trace_sha256": "c4bc4969aabacf455e16ece581a329a403f1da537af97a621b60945786c64d48"
+    },
+    {
+      "provider": "liquid",
+      "model": "d1-ultra",
+      "track": "olivermath",
+      "seed": 302,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions": 1500,
+      "rescue_button_presses": 194,
+      "low_speed_seconds": 179.0,
+      "slow_moving_seconds": 40.6,
+      "nearly_stationary_seconds": 138.4,
+      "prolonged_nearly_stationary_seconds": 138.4,
+      "finished": false,
+      "valid": true,
+      "trace_sha256": "4aea0cbf9a97353f7181a68e4fca50632a7b820ccf62a6bdd208712b85c4c2bb"
+    },
+    {
+      "provider": "sqwish",
+      "model": "kettei-fat",
+      "track": "olivermath",
+      "seed": 302,
+      "end": "finished",
+      "game_seconds": 80.4,
+      "decisions": 402,
+      "rescue_button_presses": 9,
+      "low_speed_seconds": 30.400000000000002,
+      "slow_moving_seconds": 9.8,
+      "nearly_stationary_seconds": 20.6,
+      "prolonged_nearly_stationary_seconds": 19.8,
+      "finished": true,
+      "valid": true,
+      "trace_sha256": "4ec5f9480a8acc7a5bf4ee57375fdca1117fa77b3861042108c9a3f085cfe3bb"
     }
   ],
   "head_to_head": [
@@ -127,7 +167,7 @@
         "sqwish",
         "typesafe"
       ],
-      "winner": "sqwish",
+      "winner": null,
       "tie": false,
       "end": "finished",
       "game_seconds": 132.8,
@@ -155,11 +195,15 @@
           "prolonged_nearly_stationary_seconds": 43.800000000000004
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "f87ded0d0fde7b0c8cbea4e9083710818492396b7cc92335db167525b06e7ff2",
         "typesafe": "a7f9b32381c021332d71f5f21c1a9e3edbff4d215f95a552a318c9a75906bc0c"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": "sqwish",
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     },
     {
       "track": "hacienda",
@@ -196,11 +240,15 @@
           "prolonged_nearly_stationary_seconds": 253.20000000000002
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "c7ab0c074fd9a118e9413880e85af585e251518f8cc5ed7cb3f4bfb169c84b36",
         "typesafe": "a291b0d77264a2bca6787a8547fc940b865a1407d2629c095a34f0f255b73447"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": null,
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     },
     {
       "track": "lighthouse",
@@ -209,7 +257,7 @@
         "sqwish",
         "typesafe"
       ],
-      "winner": "sqwish",
+      "winner": null,
       "tie": false,
       "end": "finished",
       "game_seconds": 91.2,
@@ -237,11 +285,15 @@
           "prolonged_nearly_stationary_seconds": 19.200000000000003
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "397ebf1bf0ab0a1264af9531e1bedf93d87fa5fd8085261815eb42fd98c51354",
         "typesafe": "3450957ad56c7f3503b149385b124b55212d18004251ab5504ac1b4b8ee557b3"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": "sqwish",
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     },
     {
       "track": "lighthouse",
@@ -278,11 +330,15 @@
           "prolonged_nearly_stationary_seconds": 243.60000000000002
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "0f218e7e96c1d713ca74fc71a4662f84fcd7ffd3f2e1fb5101ffa9a3990edba2",
         "typesafe": "14fc2ce63c49fa39428c6b326d58e58d6893b29dddbb63671064b80cee6fce0f"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": null,
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     },
     {
       "track": "olivermath",
@@ -291,7 +347,7 @@
         "sqwish",
         "typesafe"
       ],
-      "winner": "sqwish",
+      "winner": null,
       "tie": false,
       "end": "finished",
       "game_seconds": 77.0,
@@ -319,11 +375,15 @@
           "prolonged_nearly_stationary_seconds": 23.8
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "b6db0a6f2c41691b7a4fb1a0b8bfcedea3696ef47120ee702304fc63d6e48e31",
         "typesafe": "2e57eb260e441401b645ccd60ac1dc685f947932d172241b648058a916d449a1"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": "sqwish",
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     },
     {
       "track": "olivermath",
@@ -360,11 +420,15 @@
           "prolonged_nearly_stationary_seconds": 278.6
         }
       },
-      "valid": true,
+      "valid": false,
       "trace_sha256": {
         "sqwish": "7f93b1afb9969ac4a77c6bb2a49b871c7d4e621760d133d531352525c0e94409",
         "typesafe": "fb4f080ba6cad278c54d65797e219e1be96aaaabf887442a53ab36fbdca5eef0"
-      }
+      },
+      "transport_valid": true,
+      "comparison_eligible": false,
+      "observed_winner": null,
+      "invalid_reason": "The two-player capture followed race position rather than fixed player identity and used a split-screen projection in a full-frame render target."
     }
   ],
   "randomized_starts": [
