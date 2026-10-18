@@ -2,12 +2,13 @@
 
 Recorded on 18 October 2026 using the implementation in this repository. The tables retain every completed trial in the fresh comparison batch. Demonstration clips are selected excerpts; these results are the comparison sample.
 
-**Evaluation in progress: 13 of 15 trials complete.** Pending trials below have no reported outcome yet.
+The batch is complete.
 
 ## Full-lap time trials
 
 | Track | Model | Outcome | Game seconds | Rescue presses |
 |---|---|---|---:|---:|
+| Hacienda | D1 Ultra | 300-second cap | 300.0 | 85 |
 | Hacienda | Kettei Fat | 300-second cap | 300.0 | 4 |
 | Hacienda | Jev 1.14 | API failure (HTTP 529) | 277.2 | 13 |
 | Lighthouse | D1 Ultra | Finished | 161.8 | 57 |
@@ -15,8 +16,7 @@ Recorded on 18 October 2026 using the implementation in this repository. The tab
 | Lighthouse | Jev 1.14 | Finished | 131.6 | 23 |
 | Oliver's Math Class | D1 Ultra | 300-second cap | 300.0 | 194 |
 | Oliver's Math Class | Kettei Fat | Finished | 80.4 | 9 |
-| Hacienda | D1 Ultra | Pending | — | — |
-| Oliver's Math Class | Jev 1.14 | Pending | — | — |
+| Oliver's Math Class | Jev 1.14 | Finished | 110.4 | 21 |
 
 One trial per model per track is a small descriptive sample. The harness was selected for Fat and applied unchanged to the other providers; it is not a provider-specific optimization contest.
 

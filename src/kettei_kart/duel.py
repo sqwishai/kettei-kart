@@ -9,7 +9,7 @@ from pathlib import Path
 import imageio.v2 as iio
 import numpy as np
 
-from .actions import ACTION_SECONDS, ACTION_TICKS, CONTROLS, OUTCOMES, choose
+from .actions import ACTION_SECONDS, ACTION_TICKS, CONTROLS, OUTCOMES, Control, choose
 from .client import DecisionClient, RateLimiter
 from .metrics import driving_metrics
 from .observation import History, Observation
@@ -69,7 +69,8 @@ def run_duel(
             "guidance": RACE_GUIDANCE,
             "guidance_sha256": hashlib.sha256(RACE_GUIDANCE.encode()).hexdigest(),
             "timing": "Both models decide from their own pre-step camera before six shared physics ticks.",
-            "scoring": "Stop at the first completed lap; compare engine finish times if both finish in the same interval.",
+            "scoring": "Continue until both finish or the time limit. Compare engine finish times; never infer a time gap from distance.",
+            "completion_protocol": "both-finish-v1",
             "source_sha256": {
                 p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                 for p in sorted(Path(__file__).parent.glob("*.py"))
@@ -82,6 +83,9 @@ def run_duel(
     started = time.monotonic()
     try:
         simulator = Simulator(track, seed, players=2)
+        manifest = json.loads((output / "manifest.json").read_text())
+        manifest["camera_capture"] = simulator.capture_contract
+        write_json(output / "manifest.json", manifest)
         states = [simulator.evaluate(i) for i in range(2)]
         write_json(output / "initial.json", states)
         for provider in providers:
@@ -104,43 +108,54 @@ def run_duel(
                     break
                 if time.monotonic() - started > 3600:
                     raise RuntimeError("Head-to-head wall time limit reached")
-                observations = []
+                observations = {}
                 for slot, provider in enumerate(providers):
                     camera = simulator.camera(slot)
                     writers[slot].append_data(np.asarray(camera))
+                    if states[slot]["finished"]:
+                        continue
                     obs = race_observation(histories[slot], camera, step * ACTION_TICKS)
-                    observations.append(obs)
+                    observations[slot] = obs
                     for frame in obs.frames:
                         path = output / provider / frame.filename
                         if not path.exists():
                             path.write_bytes(frame.jpeg)
-                pending = [
-                    pool.submit(client.decide, obs, OUTCOMES)
-                    for client, obs in zip(clients, observations, strict=True)
-                ]
+                pending = {
+                    slot: pool.submit(clients[slot].decide, obs, OUTCOMES)
+                    for slot, obs in observations.items()
+                }
                 # Resolve every response before stepping either kart. A transport
                 # failure stops the race instead of granting the other kart time.
-                decisions = [future.result() for future in pending]
-                selected = [choose(probabilities, CONTROLS) for probabilities, _ in decisions]
+                decisions = {slot: future.result() for slot, future in pending.items()}
+                # Finished players receive no more API calls. Neutral controls keep
+                # the replay clock aligned without inventing a model decision.
+                selected = [
+                    choose(decisions[slot][0], CONTROLS)
+                    if slot in decisions
+                    else ("finished", Control(0.0, 0.0))
+                    for slot in range(2)
+                ]
                 simulator.advance_both(tuple(control for _, control in selected))
                 states = [simulator.evaluate(i) for i in range(2)]
                 for slot in range(2):
                     name, control = selected[slot]
-                    obs = observations[slot]
-                    probabilities, receipt = decisions[slot]
-                    histories[slot].record_action(name, control)
+                    obs = observations.get(slot)
+                    probabilities, receipt = decisions.get(slot, (None, None))
+                    if obs is not None:
+                        histories[slot].record_action(name, control)
                     row = {
                         "step": step,
                         "tick": (step + 1) * ACTION_TICKS,
                         "action": name,
+                        "decision_made": obs is not None,
                         "control": control.as_dict(),
                         "probabilities": probabilities,
                         "receipt": receipt,
                         "evaluator": states[slot],
-                        "model_context": obs.context,
-                        "image_files": [f.filename for f in obs.frames],
-                        "frame_sha256": [f.sha256 for f in obs.frames],
-                        "offered_outcomes": OUTCOMES,
+                        "model_context": obs.context if obs else None,
+                        "image_files": [f.filename for f in obs.frames] if obs else [],
+                        "frame_sha256": [f.sha256 for f in obs.frames] if obs else [],
+                        "offered_outcomes": OUTCOMES if obs else None,
                     }
                     rows[slot].append(row)
                     logs[slot].write(json.dumps(row, allow_nan=False) + "\n")
@@ -154,7 +169,7 @@ def run_duel(
                         ),
                         flush=True,
                     )
-                if any(state["finished"] for state in states):
+                if all(state["finished"] for state in states):
                     end = "finished"
                     break
     except (Exception, KeyboardInterrupt) as exc:
@@ -166,7 +181,11 @@ def run_duel(
         if simulator:
             for slot, provider in enumerate(providers):
                 (output / provider).mkdir(exist_ok=True)
-                simulator.camera(slot).save(output / provider / "final.jpg", quality=92)
+                try:
+                    simulator.camera(slot).save(output / provider / "final.jpg", quality=92)
+                except Exception as exc:
+                    error = error or str(exc)
+                    end = "error"
             simulator.close()
         for log in logs:
             log.close()
@@ -180,8 +199,9 @@ def run_duel(
     finishers.sort()
     tied = len(finishers) == 2 and abs(finishers[0][0] - finishers[1][0]) < 1e-6
     winner = finishers[0][1] if finishers and not tied and error is None else None
+    valid = error is None and end != "stopped"
     result = {
-        "valid": error is None and end != "stopped",
+        "valid": valid,
         "end": end,
         "error": error,
         "track": track,
@@ -190,12 +210,19 @@ def run_duel(
         "states": states,
         "winner": winner,
         "tie": tied,
-        "decisions_per_model": [len(part) for part in rows],
+        "both_finished": len(finishers) == 2,
+        "finish_times": {provider: finish_time for finish_time, provider in finishers},
+        "finish_gap_seconds": (
+            finishers[1][0] - finishers[0][0] if valid and len(finishers) == 2 else None
+        ),
+        "decisions_per_model": [sum(row["decision_made"] for row in part) for part in rows],
+        "recorded_intervals": len(rows[0]),
         "game_seconds": len(rows[0]) * ACTION_SECONDS,
         "wall_seconds": time.monotonic() - started,
         "request_attempts": [client.attempts for client in clients],
         "player_metrics": {
-            provider: driving_metrics(part) for provider, part in zip(providers, rows, strict=True)
+            provider: driving_metrics([row for row in part if row["decision_made"]])
+            for provider, part in zip(providers, rows, strict=True)
         },
     }
     write_json(output / "result.json", result)

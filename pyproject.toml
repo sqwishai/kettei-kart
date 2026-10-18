@@ -4,11 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "kettei-kart"
-version = "1.0.0"
+version = "1.0.1"
 description = "A camera-only SuperTuxKart driver with live decision probabilities."
 readme = "README.md"
 requires-python = ">=3.12,<3.14"
-license = "Apache-2.0"
+license = "Apache-2.0 AND GPL-3.0-or-later"
+license-files = ["LICENSE", "src/kettei_kart/native/COPYING"]
 authors = [{name = "Sqwish Labs"}]
 dependencies = [
   "PySuperTuxKart2==0.7.4",
@@ -30,6 +31,9 @@ Repository = "https://github.com/sqwishai/kettei-kart"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+kettei_kart = ["native/*.cpp", "native/COPYING"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

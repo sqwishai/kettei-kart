@@ -5,7 +5,7 @@
 **1v1 capture correction in progress:** the initial two-player recordings and comparison claims
 are withdrawn. A camera audit found that camera slots could follow race position instead of
 player identity, and that their projection did not match the exported image aspect ratio.
-Use the single-player commands while corrected two-player capture is being verified.
+Corrected capture checks camera ownership and projection before every image. Fresh two-player results are pending; earlier recordings are not valid comparisons.
 The [results](results/README.md) retain the excluded outcomes and explain the issue.
 
 This repository contains one selected driving harness, its native API adapters, and the tools to record and render a run. Original SuperTuxKart assets and API credentials are not bundled.
@@ -68,18 +68,24 @@ This is a Fat-selected harness applied unchanged to the comparison models. It is
 With both `SQWISH_API_KEY` and `TYPESAFE_API_KEY` set:
 
 ```bash
+sudo apt-get install -y g++ git
+python -m kettei_kart.native_camera
 kettei-kart duel --track lighthouse --seed 501 --output runs/duel-first
 kettei-kart duel --track lighthouse --seed 501 --swap --output runs/duel-swapped
 kettei-kart render-duel runs/duel-first --output runs/duel-first.mp4
 ```
 
-This starts one two-player race with two identical Tux karts, collisions, separate player cameras and a shared simulation clock. Each model receives only its own view and control history. Both choose before the game advances; the slower API response does not grant either kart extra game time. The first completed lap wins. If both cross during the same control interval, their engine finish times resolve the result. A time limit without a finisher produces no winner.
+This starts one two-player race with two identical Tux karts, collisions, separate player cameras and a shared simulation clock. Each model receives only its own view and control history. Both choose before the game advances; the slower API response does not grant either kart extra game time. The first completed lap wins, and the race continues until both finish or the game-time limit is reached. The result records both engine finish times and their difference in seconds. If one player reaches the cap, its finish time and the gap remain unavailable. A time limit without a finisher produces no winner.
+
+Two-player capture requires the native camera bridge built above. It binds each camera to its player and matches the projection to the full image aspect ratio. Every capture checks both properties and fails closed if either changes. These checks protect camera wiring; they never enter model observations or select controls. The manifest records the bridge source, engine commit and compiled binary.
+
+After a player finishes, its API calls stop. Both traces continue at the same cadence, but finished-player rows explicitly contain `decision_made: false`, neutral controls and no probabilities. The ordinary game post-finish behavior can continue while the other player races. Driving metrics exclude these post-finish rows.
 
 The race prompt adds opponent awareness and general guidance about anticipating bends, braking before an unavoidable collision, and reorienting after a rescue. Both models receive exactly the same rules, nine controls and history format. These instructions contain no track-specific routes or landmarks; the complete race guidance is in [duel.py](src/kettei_kart/duel.py).
 
 Run both grid assignments when comparing models. A single race can favor one starting slot, and a single track cannot establish overall driving strength. The combined request rate for both players is bounded by `--rate`.
 
-The paired recorder saves both views at the decision cadence. `render-duel` replays their recorded controls at 30 fps and adds the game's native **Kettei** and **Jev** names above the karts. Names follow model identity when grid slots are swapped. It checks both karts' location, distance and finish status against the original trace after every decision, makes no API calls and stops if the simulation diverges. The video identifies these names as replay additions; original model observations remain available in the trace. Use `--original-cameras` to render those original views at 5 fps instead.
+The paired recorder saves both views at the decision cadence. `render-duel` replays their recorded controls at 30 fps and adds compact native **Kettei** and **Jev** labels above the karts, with mint-green and pink paint respectively. Names and colours follow model identity when grid slots are swapped. These additions appear only in the replay and do not alter model inputs. It checks both karts' location, distance and finish status against the original trace after every decision, makes no API calls and stops if the simulation diverges. The video identifies these names as replay additions; original model observations remain available in the trace. Use `--original-cameras` to render those original views at 5 fps instead.
 
 ## Recordings and limits
 
@@ -113,4 +119,4 @@ Each CLI invocation owns one simulator. When calling the Python functions from a
 
 ## Credits and license
 
-Harness code is Apache-2.0. The optional native camera bridge is GPL-3.0-or-later, as marked in its source and accompanying license. [SuperTuxKart](https://supertuxkart.net/) and [PySuperTuxKart2](https://github.com/bpiwowar/pystk2) are independent projects with their own licenses. SuperTuxKart code is GPL-3.0-or-later; its game assets carry their individual licenses. This repository distributes neither the engine nor its original assets. Game footage is captured from SuperTuxKart. See [NOTICE](NOTICE).
+Harness code is Apache-2.0. The native camera bridge is GPL-3.0-or-later, as marked in its source and accompanying license. [SuperTuxKart](https://supertuxkart.net/) and [PySuperTuxKart2](https://github.com/bpiwowar/pystk2) are independent projects with their own licenses. SuperTuxKart code is GPL-3.0-or-later; its game assets carry their individual licenses. This repository distributes neither the engine nor its original assets. Game footage is captured from SuperTuxKart. See [NOTICE](NOTICE).

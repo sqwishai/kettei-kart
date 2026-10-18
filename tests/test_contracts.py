@@ -162,6 +162,7 @@ def test_jev_uses_native_image_multipart(monkeypatch):
 
 def test_two_player_controls_advance_one_shared_clock():
     simulator = object.__new__(Simulator)
+    simulator._world = Mock(players=[Mock(kart=Mock(has_finished_race=False)) for _ in range(2)])
 
     class Action:
         pass

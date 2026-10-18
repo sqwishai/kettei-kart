@@ -14,6 +14,7 @@ from .simulator import Simulator, track_title
 
 NAMES = {"sqwish": "Kettei Fat", "typesafe": "Jev 1.14"}
 KART_NAMES = {"sqwish": "Kettei", "typesafe": "Jev"}
+KART_HUES = {"sqwish": 0.42, "typesafe": 0.92}
 LABELS = {
     "hard_left": "Full left",
     "left": "Gentle left",
@@ -34,6 +35,10 @@ def read_rows(path: Path) -> list[dict]:
 def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
     """Replay saved controls at 30 fps, verifying physics after every decision."""
     manifest = json.loads((directory / "manifest.json").read_text())
+    if manifest.get("camera_capture", {}).get("protocol") != "fixed-player-cameras-v1":
+        raise ValueError(
+            "This race predates fixed player cameras; record a new race before rendering"
+        )
     providers = manifest["slot_providers"]
     rows = [read_rows(directory / provider / "decisions.jsonl") for provider in providers]
     if len(rows[0]) != len(rows[1]):
@@ -48,6 +53,7 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
             manifest["seed"],
             players=2,
             player_names=tuple(KART_NAMES[provider] for provider in providers),
+            player_colors=tuple(KART_HUES[provider] for provider in providers),
         )
         writers = [
             iio.get_writer(
@@ -90,6 +96,8 @@ def smooth_cameras(directory: Path, output: Path) -> dict[str, Path]:
                 "method": "Recorded controls; no model calls",
                 "player_names": [KART_NAMES[provider] for provider in providers],
                 "names_added_for_replay": True,
+                "kart_hues_added_for_replay": {p: KART_HUES[p] for p in providers},
+                "camera_capture": simulator.capture_contract,
             },
         )
         for slot, provider in enumerate(providers):
@@ -113,7 +121,11 @@ def compose_pair(
     if finished and result.get("winner"):
         center = f"{NAMES[result['winner']]} wins  /  {track_title(result['track'])}"
     text(draw, (960, 23), center, 26, TEXT, True, anchor="ma")
-    text(draw, (960, 65), f"{game_time:.1f}s", 23, MUTED, anchor="ma")
+    gap = result.get("finish_gap_seconds")
+    clock = f"{game_time:.1f}s"
+    if finished and gap is not None:
+        clock = f"Finish gap: {gap:.1f} seconds"
+    text(draw, (960, 65), clock, 23, MUTED, anchor="ma")
     for slot, provider in enumerate(("sqwish", "typesafe")):
         x = 24 + slot * 960
         canvas.paste(
@@ -122,6 +134,11 @@ def compose_pair(
         row = rows[provider]
         color = ACCENT if provider == "sqwish" else "#78C8F4"
         draw.rounded_rectangle((x, 810, x + 912, 1015), 14, fill=PANEL)
+        if row.get("decision_made") is False:
+            finish_time = row["evaluator"]["finish_time"]
+            text(draw, (x + 18, 834), f"FINISHED  ·  {finish_time:.1f} seconds", 28, color, True)
+            text(draw, (x + 18, 885), "No further model decisions", 21, MUTED)
+            continue
         text(draw, (x + 18, 823), "ACTION PROBABILITIES", 17, MUTED, True)
         names = list(row["probabilities"])
         columns = (len(names) + 1) // 2
@@ -155,6 +172,10 @@ def render_duel(directory: Path, output: Path, *, smooth: bool = True) -> None:
         raise FileExistsError(f"Refusing to overwrite {output}")
     result = json.loads((directory / "result.json").read_text())
     manifest = json.loads((directory / "manifest.json").read_text())
+    if manifest.get("camera_capture", {}).get("protocol") != "fixed-player-cameras-v1":
+        raise ValueError(
+            "This race predates fixed player cameras; record a new race before rendering"
+        )
     result.setdefault("track", manifest["track"])
     rows = {p: read_rows(directory / p / "decisions.jsonl") for p in NAMES}
     if not rows["sqwish"] or len(rows["sqwish"]) != len(rows["typesafe"]):

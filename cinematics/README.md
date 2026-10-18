@@ -33,8 +33,10 @@ original scene. Full-race replays must pass the harness's recorded-physics check
 the cinematic scene should not be substituted into an evaluated race.
 
 The Python orchestration is covered by the repository's Apache-2.0 license.
-`camera_control.cpp`, which uses the GPL engine's headers, is GPL-3.0-or-later;
-the accompanying `COPYING` contains that license. The sky was generated with the
+The shared [camera bridge](../src/kettei_kart/native/camera_control.cpp), which
+uses the GPL engine headers, is GPL-3.0-or-later; its accompanying `COPYING`
+contains that license. Kettei has mint-green kart paint and Jev has pink, with
+compact native name labels. These are presentation changes only. The sky was generated with the
 built-in image-generation tool for this project, from a brief for a clear cartoon
 sky with rounded clouds, a pastel rainbow, subtle cloud-unicorn shapes and no fog,
 text or logos. It is a new presentation asset, separate from the game's assets.

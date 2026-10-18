@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 
 from .actions import ACTION_TICKS, PHYSICS_HZ, Control
+from .native_camera import CameraGuard
 
 _graphics_used = False
 
@@ -31,6 +32,7 @@ class Simulator:
         *,
         players: int = 1,
         player_names: tuple[str, ...] | None = None,
+        player_colors: tuple[float, ...] | None = None,
     ):
         global _graphics_used
         if _graphics_used:
@@ -44,6 +46,7 @@ class Simulator:
 
         self._stk = stk
         self._race = None
+        self._camera_guard = None
         graphics = stk.GraphicsConfig.ld()
         graphics.screen_width, graphics.screen_height = 384, 288
         stk.init(graphics)
@@ -68,17 +71,39 @@ class Simulator:
             config.players[0].kart = "tux"
             if players == 2:
                 config.players.append(stk.PlayerConfig(kart="tux"))
-                config.num_cameras = 2
+                # Explicit num_cameras follows race rank in this engine version.
+                # Player-attached cameras keep identity when the race order changes.
+                config.num_cameras = 0
             for player in config.players:
                 player.controller = stk.PlayerConfig.Controller.PLAYER_CONTROL
             if player_names is not None:
                 if len(player_names) != players:
                     raise ValueError("Supply exactly one display name for each player")
-                for player, name in zip(config.players, player_names, strict=True):
-                    player.name = name
+                if players == 1:
+                    config.players[0].name = player_names[0]
+            if player_colors is not None:
+                if len(player_colors) != players or any(not 0 <= hue <= 1 for hue in player_colors):
+                    raise ValueError("Supply one hue in [0, 1] for each player")
+                for player, hue in zip(config.players, player_colors, strict=True):
+                    player.color = hue
             self._race = stk.Race(config)
             self._race.start()
             self._world = stk.WorldState()
+            if players == 2:
+                self._world.update()
+                self._camera_guard = CameraGuard(
+                    stk,
+                    tuple(int(player.kart.id) for player in self._world.players),
+                    graphics.screen_width / graphics.screen_height,
+                )
+                if player_colors:
+                    for slot, hue in enumerate(player_colors):
+                        if not self._camera_guard.native.kart_replay_set_hue(slot, hue):
+                            raise RuntimeError("The kart material does not support replay colours")
+                if player_names:
+                    for slot, name in enumerate(player_names):
+                        if not self._camera_guard.native.kart_replay_label(slot, name.encode()):
+                            raise RuntimeError("Could not add the replay player label")
             track_info = stk.Track()
             track_info.update()
             self.track_length = float(track_info.length)
@@ -90,7 +115,16 @@ class Simulator:
             raise
 
     def camera(self, player: int = 0) -> Image.Image:
-        return Image.fromarray(np.array(self._race.render_data[player].image)).convert("RGB")
+        pixels = np.array(self._race.render_data[player].image)
+        if self._camera_guard:
+            self._camera_guard.validate(player, pixels.shape[1] / pixels.shape[0])
+        return Image.fromarray(pixels).convert("RGB")
+
+    @property
+    def capture_contract(self) -> dict:
+        return (
+            self._camera_guard.manifest() if self._camera_guard else {"protocol": "single-player"}
+        )
 
     def advance_both(self, controls: tuple[Control, Control], capture=None) -> None:
         """Apply two simultaneous actions in one shared world and clock."""
@@ -103,6 +137,11 @@ class Simulator:
         for substep in range(ACTION_TICKS):
             if capture is not None:
                 capture((self.camera(0), self.camera(1)))
+            self._world.update()
+            if all(player.kart.has_finished_race for player in self._world.players):
+                # The engine's result-screen transition is not part of a race.
+                # Hold its final image for any remainder of this video interval.
+                continue
             for action, control in zip(actions, controls, strict=True):
                 action.rescue = control.rescue and substep == 0
             self._race.step(actions)

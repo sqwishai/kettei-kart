@@ -1,22 +1,7 @@
 {
   "date": "2026-10-18",
-  "batch_complete": false,
-  "pending_trials": [
-    {
-      "kind": "solo",
-      "track": "hacienda",
-      "seed": 303,
-      "provider": "liquid",
-      "name": "liquid-hacienda-s303"
-    },
-    {
-      "kind": "solo",
-      "track": "olivermath",
-      "seed": 302,
-      "provider": "typesafe",
-      "name": "typesafe-olivermath-s302"
-    }
-  ],
+  "batch_complete": true,
+  "pending_trials": [],
   "source_sha256": {
     "__init__.py": "224d4290f57a02895382a293eb3b6c92d82264488efcc352f9413bc2621176b7",
     "actions.py": "f5c0ddd237176858bc3d11c266dac524810af14db5de9003f9ba29f8c839f5f4",
@@ -38,6 +23,23 @@
     "metrics": "Rescues count button presses. Speed durations are estimates from 0.2-second samples. Slow movement can be useful cornering and is not a penalty score."
   },
   "solo": [
+    {
+      "provider": "liquid",
+      "model": "d1-ultra",
+      "track": "hacienda",
+      "seed": 303,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions": 1500,
+      "rescue_button_presses": 85,
+      "low_speed_seconds": 141.6,
+      "slow_moving_seconds": 32.6,
+      "nearly_stationary_seconds": 109.0,
+      "prolonged_nearly_stationary_seconds": 109.0,
+      "finished": false,
+      "valid": true,
+      "trace_sha256": "04222a8e781deb6fcc3962c3937188430936dcc1c4316501504858de9a4a233b"
+    },
     {
       "provider": "sqwish",
       "model": "kettei-fat",
@@ -157,6 +159,23 @@
       "finished": true,
       "valid": true,
       "trace_sha256": "4ec5f9480a8acc7a5bf4ee57375fdca1117fa77b3861042108c9a3f085cfe3bb"
+    },
+    {
+      "provider": "typesafe",
+      "model": "jev-1.14.0",
+      "track": "olivermath",
+      "seed": 302,
+      "end": "finished",
+      "game_seconds": 110.4,
+      "decisions": 552,
+      "rescue_button_presses": 21,
+      "low_speed_seconds": 46.0,
+      "slow_moving_seconds": 13.4,
+      "nearly_stationary_seconds": 32.6,
+      "prolonged_nearly_stationary_seconds": 31.200000000000003,
+      "finished": true,
+      "valid": true,
+      "trace_sha256": "02083d3959db78810d4748cd290856cdea6a7fc54bc633de45b107e23495813c"
     }
   ],
   "head_to_head": [

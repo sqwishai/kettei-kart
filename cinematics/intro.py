@@ -2,12 +2,9 @@
 
 import argparse
 import ctypes
-import hashlib
-import importlib.metadata
 import json
 import math
 import os
-import platform
 from pathlib import Path
 
 import imageio.v2 as iio
@@ -15,6 +12,8 @@ import numpy as np
 import pystk2 as stk
 from daylight import graphics, prepare
 from PIL import Image
+
+from kettei_kart.native_camera import load_bridge
 
 ROOT = Path(__file__).parent
 
@@ -29,21 +28,8 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     if args.output.exists():
         raise FileExistsError(args.output)
-    bridge = ROOT / ".cache/camera_control.so"
-    if importlib.metadata.version("PySuperTuxKart2") != "0.7.4":
-        raise SystemExit("The camera bridge requires PySuperTuxKart2==0.7.4.")
-    if not bridge.exists() or not bridge.with_suffix(".json").exists():
-        raise SystemExit("Build the native camera bridge with python cinematics/build_camera.py")
-    build = json.loads(bridge.with_suffix(".json").read_text())
-    if (
-        build["sha256"] != hashlib.sha256(bridge.read_bytes()).hexdigest()
-        or build["engine_version"] != "0.7.4"
-        or build["platform"] != platform.machine()
-    ):
-        raise SystemExit("Camera bridge does not match its build receipt; rebuild it.")
     os.environ["SUPERTUXKART_DATADIR"] = str(prepare())
-    ctypes.CDLL(stk.__file__, mode=ctypes.RTLD_GLOBAL)
-    native = ctypes.CDLL(str(bridge))
+    native, build = load_bridge(stk)
     vector = ctypes.c_float * 7
     for method in (native.kart_camera_get, native.kart_camera_set):
         method.argtypes = [ctypes.c_uint, ctypes.POINTER(ctypes.c_float)]
@@ -69,13 +55,20 @@ def main():
         config.track, config.seed, config.laps, config.num_kart = args.track, args.seed, 1, 2
         config.step_size, config.difficulty, config.overlay = 1 / 30, 1, False
         names = ("Jev", "Kettei") if args.swap else ("Kettei", "Jev")
-        config.players[0].kart, config.players[0].name = "tux", names[0]
-        config.players.append(stk.PlayerConfig(kart="tux", name=names[1]))
+        config.players[0].kart = "tux"
+        config.players.append(stk.PlayerConfig(kart="tux"))
         for player in config.players:
             player.controller = stk.PlayerConfig.Controller.PLAYER_CONTROL
         config.num_cameras = 1
         race = stk.Race(config)
         race.start()
+        for slot, name in enumerate(names):
+            hue = 0.42 if name == "Kettei" else 0.92
+            if not native.kart_replay_set_hue(slot, hue):
+                raise RuntimeError("Could not set the presentation kart colour")
+            if not native.kart_replay_label(slot, name.encode()):
+                raise RuntimeError("Could not add the presentation kart label")
+        proof["player_colours"] = {"Kettei": "mint green", "Jev": "pink"}
         for index in range(240):
             race.step([stk.Action(), stk.Action()])
             if index >= 180:
