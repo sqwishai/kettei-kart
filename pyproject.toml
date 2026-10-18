@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kettei-kart"
+version = "1.0.0"
+description = "A camera-only SuperTuxKart driver with live decision probabilities."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+license = "Apache-2.0"
+authors = [{name = "Sqwish Labs"}]
+dependencies = [
+  "PySuperTuxKart2==0.7.4",
+  "numpy==2.5.4",
+  "Pillow==13.0.0",
+  "requests==2.34.2",
+  "imageio==2.38.1",
+  "imageio-ffmpeg==0.6.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[project.scripts]
+kettei-kart = "kettei_kart.cli:main"
+
+[project.urls]
+Repository = "https://github.com/sqwishai/kettei-kart"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP"]

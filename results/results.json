@@ -1,0 +1,484 @@
+{
+  "date": "2026-10-18",
+  "batch_complete": false,
+  "pending_trials": [
+    {
+      "kind": "solo",
+      "track": "hacienda",
+      "seed": 303,
+      "provider": "sqwish",
+      "name": "sqwish-hacienda-s303"
+    },
+    {
+      "kind": "solo",
+      "track": "olivermath",
+      "seed": 302,
+      "provider": "liquid",
+      "name": "liquid-olivermath-s302"
+    },
+    {
+      "kind": "solo",
+      "track": "olivermath",
+      "seed": 302,
+      "provider": "sqwish",
+      "name": "sqwish-olivermath-s302"
+    },
+    {
+      "kind": "solo",
+      "track": "hacienda",
+      "seed": 303,
+      "provider": "liquid",
+      "name": "liquid-hacienda-s303"
+    },
+    {
+      "kind": "solo",
+      "track": "lighthouse",
+      "seed": 301,
+      "provider": "liquid",
+      "name": "liquid-lighthouse-s301"
+    },
+    {
+      "kind": "solo",
+      "track": "olivermath",
+      "seed": 302,
+      "provider": "typesafe",
+      "name": "typesafe-olivermath-s302"
+    }
+  ],
+  "source_sha256": {
+    "__init__.py": "224d4290f57a02895382a293eb3b6c92d82264488efcc352f9413bc2621176b7",
+    "actions.py": "f5c0ddd237176858bc3d11c266dac524810af14db5de9003f9ba29f8c839f5f4",
+    "cli.py": "4b505e957ca8c89b97c1ca8eb05210890a1d1942a8c48d9b0d27f42d02b74b3f",
+    "client.py": "d30daadbf3063570f2a040625806c5b143e2ba4f793c907d3c148383778f78b2",
+    "duel.py": "b12b7c924aa9eb6dd7698d0369987b1f4cb2bd0ddab7bfad8d3b2af22d00e587",
+    "duel_render.py": "36d61137303a6af15ad5c3447d6b928f3cba9d04c03f69eba581eece83ce3dd8",
+    "metrics.py": "58f6e733799f326e87bec661a02b9a1a974afa1f0ae8b29f6137f4090ff703f0",
+    "observation.py": "74bdac7b433d830fb0fa5dfe5055fadc586e9cad5b9dfb8499e9bc3a5dc58903",
+    "render.py": "8791ca15e0f482244e0b791026f1172064ef345e2478b2573ca559b0cc3cfca1",
+    "runner.py": "b14d1ea1a699ddf31aba5300fa3dc243fd5ae96304e3f607d7efe8ad03823e74",
+    "simulator.py": "fdfe068abe6045893949e4e6ee446a792079d9b18d343297e06b4f99c1925817"
+  },
+  "protocol": {
+    "solo": "One standing-grid time trial per model and track; 300 game-second cap.",
+    "duel": "One shared-world race per grid assignment on each track; two identical Tux karts; same cameras, controls and guidance; first finisher wins. Both choose before advancing the clock. A cap without a finisher has no winner.",
+    "randomized": "Ten matched development starts and four starts on two untouched tracks. Setup uses deterministic, model-independent controls near the starting line. Reported times begin at model takeover; these are not entirely model-driven standing-grid laps.",
+    "timing": "Game durations count controlled simulation ticks after the fixed countdown. API waiting time is excluded. Engine finish times break crossings in the same control interval.",
+    "metrics": "Rescues count button presses. Speed durations are estimates from 0.2-second samples. Slow movement can be useful cornering and is not a penalty score."
+  },
+  "solo": [
+    {
+      "provider": "typesafe",
+      "model": "jev-1.14.0",
+      "track": "hacienda",
+      "seed": 303,
+      "end": "error",
+      "game_seconds": 277.2,
+      "decisions": 1386,
+      "rescue_button_presses": 13,
+      "low_speed_seconds": 133.6,
+      "slow_moving_seconds": 32.6,
+      "nearly_stationary_seconds": 101.0,
+      "prolonged_nearly_stationary_seconds": 101.0,
+      "finished": false,
+      "valid": false,
+      "failure_status": "HTTP 529",
+      "trace_sha256": "a05d0ddb5f60ca330ff096e676dc736f22e14c7f3b530674d23b0e22317a6a57"
+    },
+    {
+      "provider": "sqwish",
+      "model": "kettei-fat",
+      "track": "lighthouse",
+      "seed": 301,
+      "end": "finished",
+      "game_seconds": 74.0,
+      "decisions": 370,
+      "rescue_button_presses": 4,
+      "low_speed_seconds": 12.0,
+      "slow_moving_seconds": 2.8000000000000003,
+      "nearly_stationary_seconds": 9.200000000000001,
+      "prolonged_nearly_stationary_seconds": 9.200000000000001,
+      "finished": true,
+      "valid": true,
+      "trace_sha256": "8a5b53b77f6c6ef502fee60db7ce5a65a9e2b0e2470ee1b206ea9bd809173d47"
+    },
+    {
+      "provider": "typesafe",
+      "model": "jev-1.14.0",
+      "track": "lighthouse",
+      "seed": 301,
+      "end": "finished",
+      "game_seconds": 131.6,
+      "decisions": 658,
+      "rescue_button_presses": 23,
+      "low_speed_seconds": 37.0,
+      "slow_moving_seconds": 10.600000000000001,
+      "nearly_stationary_seconds": 26.400000000000002,
+      "prolonged_nearly_stationary_seconds": 26.400000000000002,
+      "finished": true,
+      "valid": true,
+      "trace_sha256": "c4bc4969aabacf455e16ece581a329a403f1da537af97a621b60945786c64d48"
+    }
+  ],
+  "head_to_head": [
+    {
+      "track": "hacienda",
+      "seed": 503,
+      "slot_providers": [
+        "sqwish",
+        "typesafe"
+      ],
+      "winner": "sqwish",
+      "tie": false,
+      "end": "finished",
+      "game_seconds": 132.8,
+      "decisions_per_model": [
+        664,
+        664
+      ],
+      "player_metrics": {
+        "sqwish": {
+          "rescue_button_presses": 3,
+          "low_speed_seconds": 36.6,
+          "low_speed_fraction": 0.2756024096385542,
+          "slow_moving_seconds": 11.200000000000001,
+          "nearly_stationary_seconds": 25.400000000000002,
+          "nearly_stationary_fraction": 0.19126506024096385,
+          "prolonged_nearly_stationary_seconds": 24.6
+        },
+        "typesafe": {
+          "rescue_button_presses": 5,
+          "low_speed_seconds": 59.0,
+          "low_speed_fraction": 0.4442771084337349,
+          "slow_moving_seconds": 15.0,
+          "nearly_stationary_seconds": 44.0,
+          "nearly_stationary_fraction": 0.3313253012048193,
+          "prolonged_nearly_stationary_seconds": 43.800000000000004
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "f87ded0d0fde7b0c8cbea4e9083710818492396b7cc92335db167525b06e7ff2",
+        "typesafe": "a7f9b32381c021332d71f5f21c1a9e3edbff4d215f95a552a318c9a75906bc0c"
+      }
+    },
+    {
+      "track": "hacienda",
+      "seed": 503,
+      "slot_providers": [
+        "typesafe",
+        "sqwish"
+      ],
+      "winner": null,
+      "tie": false,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions_per_model": [
+        1500,
+        1500
+      ],
+      "player_metrics": {
+        "typesafe": {
+          "rescue_button_presses": 285,
+          "low_speed_seconds": 261.8,
+          "low_speed_fraction": 0.8726666666666667,
+          "slow_moving_seconds": 7.2,
+          "nearly_stationary_seconds": 254.60000000000002,
+          "nearly_stationary_fraction": 0.8486666666666667,
+          "prolonged_nearly_stationary_seconds": 254.60000000000002
+        },
+        "sqwish": {
+          "rescue_button_presses": 910,
+          "low_speed_seconds": 262.2,
+          "low_speed_fraction": 0.874,
+          "slow_moving_seconds": 8.4,
+          "nearly_stationary_seconds": 253.8,
+          "nearly_stationary_fraction": 0.846,
+          "prolonged_nearly_stationary_seconds": 253.20000000000002
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "c7ab0c074fd9a118e9413880e85af585e251518f8cc5ed7cb3f4bfb169c84b36",
+        "typesafe": "a291b0d77264a2bca6787a8547fc940b865a1407d2629c095a34f0f255b73447"
+      }
+    },
+    {
+      "track": "lighthouse",
+      "seed": 501,
+      "slot_providers": [
+        "sqwish",
+        "typesafe"
+      ],
+      "winner": "sqwish",
+      "tie": false,
+      "end": "finished",
+      "game_seconds": 91.2,
+      "decisions_per_model": [
+        456,
+        456
+      ],
+      "player_metrics": {
+        "sqwish": {
+          "rescue_button_presses": 8,
+          "low_speed_seconds": 19.8,
+          "low_speed_fraction": 0.21710526315789475,
+          "slow_moving_seconds": 6.800000000000001,
+          "nearly_stationary_seconds": 13.0,
+          "nearly_stationary_fraction": 0.1425438596491228,
+          "prolonged_nearly_stationary_seconds": 12.200000000000001
+        },
+        "typesafe": {
+          "rescue_button_presses": 46,
+          "low_speed_seconds": 25.0,
+          "low_speed_fraction": 0.2741228070175439,
+          "slow_moving_seconds": 5.800000000000001,
+          "nearly_stationary_seconds": 19.200000000000003,
+          "nearly_stationary_fraction": 0.21052631578947367,
+          "prolonged_nearly_stationary_seconds": 19.200000000000003
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "397ebf1bf0ab0a1264af9531e1bedf93d87fa5fd8085261815eb42fd98c51354",
+        "typesafe": "3450957ad56c7f3503b149385b124b55212d18004251ab5504ac1b4b8ee557b3"
+      }
+    },
+    {
+      "track": "lighthouse",
+      "seed": 501,
+      "slot_providers": [
+        "typesafe",
+        "sqwish"
+      ],
+      "winner": null,
+      "tie": false,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions_per_model": [
+        1500,
+        1500
+      ],
+      "player_metrics": {
+        "typesafe": {
+          "rescue_button_presses": 77,
+          "low_speed_seconds": 269.0,
+          "low_speed_fraction": 0.8966666666666666,
+          "slow_moving_seconds": 5.2,
+          "nearly_stationary_seconds": 263.8,
+          "nearly_stationary_fraction": 0.8793333333333333,
+          "prolonged_nearly_stationary_seconds": 263.8
+        },
+        "sqwish": {
+          "rescue_button_presses": 1128,
+          "low_speed_seconds": 246.4,
+          "low_speed_fraction": 0.8213333333333334,
+          "slow_moving_seconds": 2.8000000000000003,
+          "nearly_stationary_seconds": 243.60000000000002,
+          "nearly_stationary_fraction": 0.812,
+          "prolonged_nearly_stationary_seconds": 243.60000000000002
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "0f218e7e96c1d713ca74fc71a4662f84fcd7ffd3f2e1fb5101ffa9a3990edba2",
+        "typesafe": "14fc2ce63c49fa39428c6b326d58e58d6893b29dddbb63671064b80cee6fce0f"
+      }
+    },
+    {
+      "track": "olivermath",
+      "seed": 502,
+      "slot_providers": [
+        "sqwish",
+        "typesafe"
+      ],
+      "winner": "sqwish",
+      "tie": false,
+      "end": "finished",
+      "game_seconds": 77.0,
+      "decisions_per_model": [
+        385,
+        385
+      ],
+      "player_metrics": {
+        "sqwish": {
+          "rescue_button_presses": 10,
+          "low_speed_seconds": 23.6,
+          "low_speed_fraction": 0.3064935064935065,
+          "slow_moving_seconds": 10.8,
+          "nearly_stationary_seconds": 12.8,
+          "nearly_stationary_fraction": 0.16623376623376623,
+          "prolonged_nearly_stationary_seconds": 10.200000000000001
+        },
+        "typesafe": {
+          "rescue_button_presses": 10,
+          "low_speed_seconds": 32.4,
+          "low_speed_fraction": 0.42077922077922075,
+          "slow_moving_seconds": 7.800000000000001,
+          "nearly_stationary_seconds": 24.6,
+          "nearly_stationary_fraction": 0.3194805194805195,
+          "prolonged_nearly_stationary_seconds": 23.8
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "b6db0a6f2c41691b7a4fb1a0b8bfcedea3696ef47120ee702304fc63d6e48e31",
+        "typesafe": "2e57eb260e441401b645ccd60ac1dc685f947932d172241b648058a916d449a1"
+      }
+    },
+    {
+      "track": "olivermath",
+      "seed": 502,
+      "slot_providers": [
+        "typesafe",
+        "sqwish"
+      ],
+      "winner": null,
+      "tie": false,
+      "end": "game_time_limit",
+      "game_seconds": 300.0,
+      "decisions_per_model": [
+        1500,
+        1500
+      ],
+      "player_metrics": {
+        "typesafe": {
+          "rescue_button_presses": 30,
+          "low_speed_seconds": 284.6,
+          "low_speed_fraction": 0.9486666666666667,
+          "slow_moving_seconds": 4.4,
+          "nearly_stationary_seconds": 280.2,
+          "nearly_stationary_fraction": 0.934,
+          "prolonged_nearly_stationary_seconds": 280.2
+        },
+        "sqwish": {
+          "rescue_button_presses": 1333,
+          "low_speed_seconds": 283.6,
+          "low_speed_fraction": 0.9453333333333334,
+          "slow_moving_seconds": 4.6000000000000005,
+          "nearly_stationary_seconds": 279.0,
+          "nearly_stationary_fraction": 0.93,
+          "prolonged_nearly_stationary_seconds": 278.6
+        }
+      },
+      "valid": true,
+      "trace_sha256": {
+        "sqwish": "7f93b1afb9969ac4a77c6bb2a49b871c7d4e621760d133d531352525c0e94409",
+        "typesafe": "fb4f080ba6cad278c54d65797e219e1be96aaaabf887442a53ab36fbdca5eef0"
+      }
+    }
+  ],
+  "randomized_starts": [
+    {
+      "track": "lighthouse",
+      "seed": 992151,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 76.4,
+      "rescue_button_presses": 6
+    },
+    {
+      "track": "olivermath",
+      "seed": 368546,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 122.8,
+      "rescue_button_presses": 15
+    },
+    {
+      "track": "lighthouse",
+      "seed": 331531,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 61.4,
+      "rescue_button_presses": 2
+    },
+    {
+      "track": "olivermath",
+      "seed": 221193,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 98.4,
+      "rescue_button_presses": 13
+    },
+    {
+      "track": "hacienda",
+      "seed": 703731,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 112.8,
+      "rescue_button_presses": 5
+    },
+    {
+      "track": "lighthouse",
+      "seed": 385887,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 74.2,
+      "rescue_button_presses": 4
+    },
+    {
+      "track": "olivermath",
+      "seed": 158734,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 137.4,
+      "rescue_button_presses": 28
+    },
+    {
+      "track": "lighthouse",
+      "seed": 929620,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 81.0,
+      "rescue_button_presses": 10
+    },
+    {
+      "track": "hacienda",
+      "seed": 973414,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 263.8,
+      "rescue_button_presses": 8
+    },
+    {
+      "track": "hacienda",
+      "seed": 747446,
+      "stage": "confirmation",
+      "finished": true,
+      "seconds_after_takeover": 236.0,
+      "rescue_button_presses": 6
+    },
+    {
+      "track": "zengarden",
+      "seed": 4115426,
+      "stage": "heldout",
+      "finished": true,
+      "seconds_after_takeover": 73.2,
+      "rescue_button_presses": 9
+    },
+    {
+      "track": "zengarden",
+      "seed": 9523393,
+      "stage": "heldout",
+      "finished": true,
+      "seconds_after_takeover": 94.8,
+      "rescue_button_presses": 12
+    },
+    {
+      "track": "snowtuxpeak",
+      "seed": 1823752,
+      "stage": "heldout",
+      "finished": true,
+      "seconds_after_takeover": 154.8,
+      "rescue_button_presses": 25
+    },
+    {
+      "track": "snowtuxpeak",
+      "seed": 5019471,
+      "stage": "heldout",
+      "finished": true,
+      "seconds_after_takeover": 155.8,
+      "rescue_button_presses": 24
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+Kettei Kart
+Copyright 2026 Sqwish Labs
+
+This repository contains the harness and rendering code, not SuperTuxKart or its assets.
+SuperTuxKart: https://supertuxkart.net/
+PySuperTuxKart2: https://github.com/bpiwowar/pystk2
+
+SuperTuxKart is an independent open-source kart racing game. Its code and artwork
+remain subject to their respective upstream licenses. Track and character names
+identify the game content used in the recorded demonstration; no endorsement is implied.
+
+D1 Ultra and Jev are provided by their respective API vendors. Provider credentials
+and usage charges are the responsibility of the person running the harness.
